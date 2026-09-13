@@ -46,9 +46,9 @@ export default function Home() {
 
         {/* Categories */}
         <section>
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-lg">📚</span>
-            <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="text-2xl">📚</span>
+            <h2 className="text-lg font-bold text-gray-700">
               今天想學什麼呢？
             </h2>
           </div>
