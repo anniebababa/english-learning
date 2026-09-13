@@ -20,6 +20,15 @@ type Props = {
   loaded: boolean;
 };
 
+function getTodayLabel() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = d.getMonth() + 1;
+  const day = d.getDate();
+  const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+  return `${y} 年 ${m} 月 ${day} 日（週${weekdays[d.getDay()]}）`;
+}
+
 export default function ProgressCard({ data, loaded }: Props) {
   const todayCount = data.todayIds.length;
   const totalCount = data.totalIds.length;
@@ -31,6 +40,9 @@ export default function ProgressCard({ data, loaded }: Props) {
       <div className="h-1.5 bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300" />
 
       <div className="p-5">
+        {/* 今天日期 */}
+        <p className="text-xs text-gray-400 text-center mb-4">{getTodayLabel()}</p>
+
         {/* 兩個大數字 */}
         <div className="flex gap-6 mb-4">
           <div className="flex-1 text-center">

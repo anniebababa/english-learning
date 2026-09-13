@@ -2,6 +2,7 @@
 
 import PhraseCard from "./PhraseCard";
 import ProgressCard from "./ProgressCard";
+import GoalCard from "./GoalCard";
 import { useProgress } from "@/hooks/useProgress";
 import type { Phrase } from "@/data/phrases";
 
@@ -15,8 +16,13 @@ export default function HomeClient({ todayPhrase }: Props) {
   return (
     <>
       {/* 學習進度 */}
-      <section className="mb-8">
+      <section className="mb-4">
         <ProgressCard data={data} loaded={loaded} />
+      </section>
+
+      {/* 學習目標 */}
+      <section className="mb-4">
+        <GoalCard totalLearned={loaded ? data.totalIds.length : 0} />
       </section>
 
       {/* 今日一句 */}

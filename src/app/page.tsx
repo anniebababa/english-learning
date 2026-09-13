@@ -26,7 +26,7 @@ export default function Home() {
           <div className="flex items-center gap-2 mb-4">
             <span className="text-lg">📚</span>
             <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
-              分類練習
+              今天想學什麼呢？
             </h2>
           </div>
           <CategoryGrid />
