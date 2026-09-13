@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "每日英文學習",
+  title: "無聊就來學英文",
   description: "每天一句實用日常英文，輕鬆開口說英文",
 };
 

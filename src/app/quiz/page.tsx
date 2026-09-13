@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { phrases, categories } from "@/data/phrases";
 import type { Phrase } from "@/data/phrases";
 import SpeakButton from "@/components/SpeakButton";
+import QuizHistoryChart from "@/components/QuizHistoryChart";
+import { useQuizHistory } from "@/hooks/useQuizHistory";
 
 type QuizState = "select" | "playing" | "result";
 
 type Question = {
   phrase: Phrase;
-  options: string[];   // 3 個中文選項（已洗牌）
+  options: string[];
   correctIndex: number;
 };
 
@@ -21,22 +23,16 @@ function shuffled<T>(arr: T[]): T[] {
 
 function buildQuestions(pool: Phrase[]): Question[] {
   return shuffled(pool).map((phrase) => {
-    // 同分類優先當干擾項（最容易混淆）
     const sameCategory = pool.filter(
       (p) => p.id !== phrase.id && p.category === phrase.category
     );
     const otherCategory = pool.filter(
       (p) => p.id !== phrase.id && p.category !== phrase.category
     );
-
-    const distractorPool = [
-      ...shuffled(sameCategory),
-      ...shuffled(otherCategory),
-    ];
+    const distractorPool = [...shuffled(sameCategory), ...shuffled(otherCategory)];
     const distractors = distractorPool.slice(0, 2).map((p) => p.chinese);
     const options = shuffled([phrase.chinese, ...distractors]);
     const correctIndex = options.indexOf(phrase.chinese);
-
     return { phrase, options, correctIndex };
   });
 }
@@ -49,6 +45,7 @@ export default function QuizPage() {
   const [answerState, setAnswerState] = useState<AnswerState>("unanswered");
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [score, setScore] = useState(0);
+  const { history, saveRecord } = useQuizHistory();
 
   const startQuiz = useCallback(() => {
     const pool =
@@ -65,10 +62,8 @@ export default function QuizPage() {
 
   const handleSelect = (optionIndex: number) => {
     if (answerState !== "unanswered") return;
-
     const q = questions[current];
     const isCorrect = optionIndex === q.correctIndex;
-
     setSelectedOption(optionIndex);
     setAnswerState(isCorrect ? "correct" : "wrong");
     if (isCorrect) setScore((s) => s + 1);
@@ -83,6 +78,16 @@ export default function QuizPage() {
       }
     }, isCorrect ? 900 : 1400);
   };
+
+  // 測驗結束時儲存紀錄
+  useEffect(() => {
+    if (state === "result" && questions.length > 0) {
+      const total = questions.length;
+      const pct = Math.round((score / total) * 100);
+      saveRecord({ score, total, pct, category: selectedCategory });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   // ── 選分類 ──
   if (state === "select") {
@@ -130,6 +135,9 @@ export default function QuizPage() {
           >
             開始測驗 →
           </button>
+
+          {/* 歷史紀錄圖表 */}
+          <QuizHistoryChart history={history} />
         </div>
       </div>
     );
@@ -170,7 +178,7 @@ export default function QuizPage() {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 mb-2">
             <button
               onClick={startQuiz}
               className="flex-1 py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700 transition-colors"
@@ -184,6 +192,9 @@ export default function QuizPage() {
               換分類
             </button>
           </div>
+
+          {/* 歷史紀錄圖表 */}
+          <QuizHistoryChart history={history} />
         </div>
       </div>
     );
@@ -221,7 +232,6 @@ export default function QuizPage() {
             <SpeakButton text={q.phrase.english} />
           </div>
 
-          {/* 答對/錯後顯示例句 */}
           {answerState !== "unanswered" && (
             <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in duration-200">
               <p className="text-sm text-gray-600 italic">
@@ -237,7 +247,6 @@ export default function QuizPage() {
           {q.options.map((option, i) => {
             let style =
               "w-full text-left px-5 py-4 rounded-xl border-2 font-medium text-base transition-all duration-200 ";
-
             if (answerState === "unanswered") {
               style += "border-gray-100 bg-white text-gray-800 hover:border-violet-300 hover:bg-violet-50 active:scale-[0.98]";
             } else if (i === q.correctIndex) {
@@ -247,12 +256,9 @@ export default function QuizPage() {
             } else {
               style += "border-gray-100 bg-white text-gray-400";
             }
-
             return (
               <button key={i} className={style} onClick={() => handleSelect(i)}>
-                <span className="text-gray-400 mr-3 font-normal">
-                  {["A", "B", "C"][i]}.
-                </span>
+                <span className="text-gray-400 mr-3 font-normal">{["A", "B", "C"][i]}.</span>
                 {option}
                 {answerState !== "unanswered" && i === q.correctIndex && (
                   <span className="ml-2 text-green-500">✓</span>
