@@ -1,3 +1,4 @@
+import Image from "next/image";
 import HomeClient from "@/components/HomeClient";
 import SearchSection from "@/components/SearchSection";
 import CategoryGrid from "@/components/CategoryGrid";
@@ -8,12 +9,27 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white">
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">無聊就來學英文</h1>
-          <p className="text-gray-500">每天一句，輕鬆開口說英文</p>
+      {/* Hero Banner */}
+      <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/7" }}>
+        <Image
+          src="/hero.png"
+          alt="無聊就來學英文"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* 左側文字疊層 */}
+        <div className="absolute inset-0 flex flex-col justify-center pl-8 sm:pl-14 md:pl-20 pr-[45%]">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 leading-tight drop-shadow-sm">
+            無聊就來學英文
+          </h1>
+          <p className="text-sm sm:text-base text-gray-500 mt-2 leading-relaxed">
+            每天一句，<br className="sm:hidden" />輕鬆開口說英文
+          </p>
         </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-8">
 
         {/* 關鍵字搜尋 */}
         <SearchSection />
