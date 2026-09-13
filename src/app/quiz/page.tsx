@@ -6,6 +6,8 @@ import type { Phrase } from "@/data/phrases";
 import SpeakButton from "@/components/SpeakButton";
 import QuizHistoryChart from "@/components/QuizHistoryChart";
 import { useQuizHistory } from "@/hooks/useQuizHistory";
+import { getDifficulty, difficultyConfig } from "@/lib/utils";
+import type { Difficulty } from "@/lib/utils";
 
 type QuizState = "select" | "playing" | "result";
 
@@ -40,6 +42,7 @@ function buildQuestions(pool: Phrase[]): Question[] {
 export default function QuizPage() {
   const [state, setState] = useState<QuizState>("select");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty | "all">("all");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [current, setCurrent] = useState(0);
   const [answerState, setAnswerState] = useState<AnswerState>("unanswered");
@@ -48,10 +51,12 @@ export default function QuizPage() {
   const { history, saveRecord } = useQuizHistory();
 
   const startQuiz = useCallback(() => {
-    const pool =
-      selectedCategory === "all"
-        ? phrases
-        : phrases.filter((p) => p.category === selectedCategory);
+    let pool = selectedCategory === "all"
+      ? phrases
+      : phrases.filter((p) => p.category === selectedCategory);
+    if (selectedDifficulty !== "all") {
+      pool = pool.filter((p) => getDifficulty(p.english, p.category) === selectedDifficulty);
+    }
     setQuestions(buildQuestions(pool));
     setCurrent(0);
     setAnswerState("unanswered");
@@ -67,7 +72,6 @@ export default function QuizPage() {
     setSelectedOption(optionIndex);
     setAnswerState(isCorrect ? "correct" : "wrong");
     if (isCorrect) setScore((s) => s + 1);
-
     setTimeout(() => {
       if (current + 1 >= questions.length) {
         setState("result");
@@ -100,6 +104,39 @@ export default function QuizPage() {
             <p className="text-gray-500 text-sm mt-1">三選一，選出正確的中文意思</p>
           </div>
 
+          {/* 難度篩選 */}
+          <div className="mb-6">
+            <p className="text-xs text-gray-500 font-medium mb-2">難度篩選</p>
+            <div className="flex gap-2">
+              {(["all", "easy", "medium", "hard"] as const).map((d) => {
+                const isActive = selectedDifficulty === d;
+                const count = d === "all"
+                  ? phrases.length
+                  : phrases.filter((p) => getDifficulty(p.english, p.category) === d).length;
+                const label = d === "all" ? "全部" : difficultyConfig[d].label;
+                const activeColor = d === "all"
+                  ? "border-violet-500 bg-violet-50 text-violet-700"
+                  : d === "easy"
+                  ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                  : d === "medium"
+                  ? "border-amber-500 bg-amber-50 text-amber-700"
+                  : "border-rose-500 bg-rose-50 text-rose-700";
+                return (
+                  <button
+                    key={d}
+                    onClick={() => setSelectedDifficulty(d)}
+                    className={`flex-1 py-2.5 rounded-xl border-2 text-sm font-semibold transition-colors ${
+                      isActive ? activeColor : "border-gray-100 bg-white text-gray-500 hover:border-gray-200"
+                    }`}
+                  >
+                    {label}
+                    <span className="block text-xs font-normal opacity-70">{count} 題</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="space-y-3 mb-8">
             <button
               onClick={() => setSelectedCategory("all")}
@@ -109,10 +146,14 @@ export default function QuizPage() {
                   : "border-gray-100 bg-white text-gray-700 hover:border-violet-200"
               }`}
             >
-              🎲 全部句子（{phrases.length} 題）
+              🎲 全部句子（{phrases.filter(p => selectedDifficulty === "all" || getDifficulty(p.english, p.category) === selectedDifficulty).length} 題）
             </button>
             {categories.map((cat) => {
-              const count = phrases.filter((p) => p.category === cat.id).length;
+              const count = phrases.filter((p) =>
+                p.category === cat.id &&
+                (selectedDifficulty === "all" || getDifficulty(p.english, p.category) === selectedDifficulty)
+              ).length;
+              if (count === 0) return null;
               return (
                 <button
                   key={cat.id}

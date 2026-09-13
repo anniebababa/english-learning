@@ -5,6 +5,7 @@ import type { Phrase } from "@/data/phrases";
 import SpeakButton from "./SpeakButton";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useProgress } from "@/hooks/useProgress";
+import { getDifficulty, difficultyConfig } from "@/lib/utils";
 
 type Props = {
   phrase: Phrase;
@@ -22,6 +23,8 @@ export default function PhraseCard({
   const [revealed, setRevealed] = useState(defaultRevealed);
   const { isFavorite, toggle, loaded: favLoaded } = useFavorites();
   const { isLearned, toggleLearned, loaded: progLoaded } = useProgress();
+  const difficulty = getDifficulty(phrase.english, phrase.category);
+  const diff = difficultyConfig[difficulty];
 
   return (
     <div className={`bg-white rounded-2xl shadow-sm border p-6 select-none transition-colors ${
@@ -52,15 +55,22 @@ export default function PhraseCard({
         )}
 
         {/* 中文文字 */}
-        <p
-          className="text-xl font-semibold text-gray-900 leading-relaxed flex-1 cursor-pointer"
-          onClick={() => {
-            if (!revealed) onReveal?.(phrase.id);
-            setRevealed((v) => !v);
-          }}
-        >
-          {phrase.chinese}
-        </p>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-full ${diff.color}`}>
+              {diff.label}
+            </span>
+          </div>
+          <p
+            className="text-xl font-semibold text-gray-900 leading-relaxed cursor-pointer"
+            onClick={() => {
+              if (!revealed) onReveal?.(phrase.id);
+              setRevealed((v) => !v);
+            }}
+          >
+            {phrase.chinese}
+          </p>
+        </div>
 
         {/* 收藏按鈕 */}
         {favLoaded && (
