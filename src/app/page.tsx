@@ -1,7 +1,7 @@
-import Link from "next/link";
 import HomeClient from "@/components/HomeClient";
 import SearchSection from "@/components/SearchSection";
-import { getTodayPhrase, categories } from "@/data/phrases";
+import CategoryGrid from "@/components/CategoryGrid";
+import { getTodayPhrase } from "@/data/phrases";
 
 export default function Home() {
   const todayPhrase = getTodayPhrase();
@@ -29,20 +29,7 @@ export default function Home() {
               分類練習
             </h2>
           </div>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/category/${cat.id}`}
-                className="flex flex-col items-center justify-center gap-2 bg-white rounded-2xl border border-gray-100 aspect-square shadow-sm hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all group"
-              >
-                <span className="text-3xl leading-none">{cat.emoji}</span>
-                <span className="text-xs font-medium text-gray-600 group-hover:text-indigo-600 transition-colors text-center px-1 leading-tight">
-                  {cat.label}
-                </span>
-              </Link>
-            ))}
-          </div>
+          <CategoryGrid />
         </section>
 
         <p className="text-center text-xs text-gray-400 mt-10">
