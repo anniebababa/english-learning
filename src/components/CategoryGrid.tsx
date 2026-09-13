@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   DndContext,
   closestCenter,
@@ -23,6 +24,19 @@ import { categories as defaultCategories } from "@/data/phrases";
 type Category = { id: string; label: string; emoji: string };
 
 const STORAGE_KEY = "english-category-order";
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  greetings: "/categories/greetings.png",
+  smalltalk: "/categories/smalltalk.png",
+  thanks: "/categories/thanks.png",
+  shopping: "/categories/shopping.png",
+  restaurant: "/categories/restaurant.png",
+  work: "/categories/work.png",
+  directions: "/categories/directions.png",
+  teacher: "/categories/teacher.png",
+  toeic: "/categories/toeic.png",
+  uber: "/categories/uber.png",
+};
 
 function DragHandle(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
@@ -59,16 +73,39 @@ function SortableCard({ cat }: { cat: Category }) {
     opacity: isDragging ? 0.4 : 1,
   };
 
+  const imgSrc = CATEGORY_IMAGES[cat.id];
+
   return (
     <div ref={setNodeRef} style={style} className="relative">
       <Link
         href={`/category/${cat.id}`}
-        className="flex flex-col items-center justify-center gap-2 bg-white rounded-2xl border border-gray-100 aspect-square shadow-sm hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all group select-none"
+        className="flex flex-col bg-white rounded-2xl border border-gray-100 aspect-square shadow-sm hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all group select-none overflow-hidden"
       >
-        <span className="text-3xl leading-none">{cat.emoji}</span>
-        <span className="text-xs font-medium text-gray-600 group-hover:text-indigo-600 transition-colors text-center px-1 leading-tight">
-          {cat.label}
-        </span>
+        {imgSrc ? (
+          <>
+            <div className="flex-1 relative w-full">
+              <Image
+                src={imgSrc}
+                alt={cat.label}
+                fill
+                className="object-contain p-2.5"
+                sizes="150px"
+              />
+            </div>
+            <div className="pb-2.5 text-center">
+              <span className="text-xs font-medium text-gray-600 group-hover:text-indigo-600 transition-colors leading-tight">
+                {cat.label}
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-2 w-full h-full">
+            <span className="text-3xl leading-none">{cat.emoji}</span>
+            <span className="text-xs font-medium text-gray-600 group-hover:text-indigo-600 transition-colors text-center px-1 leading-tight">
+              {cat.label}
+            </span>
+          </div>
+        )}
       </Link>
       <DragHandle {...attributes} {...listeners} />
     </div>
