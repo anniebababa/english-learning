@@ -162,28 +162,33 @@ export default function GoalCard({ totalLearned }: { totalLearned: number }) {
               </span>
             </div>
 
-            {/* 動物跑道 */}
-            <div className="relative h-10 flex items-center">
-              {/* 跑道背景 */}
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-gray-100 rounded-full overflow-hidden">
+            {/* 動物跑道（右 → 左） */}
+            <div className="relative h-10 flex items-center px-6">
+              {/* 左邊終點 🎯 */}
+              <div className="absolute left-0 top-1/2 -translate-y-full text-lg leading-none z-10">
+                🎯
+              </div>
+
+              {/* 跑道背景（從右往左填色） */}
+              <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all duration-700"
+                  className="h-full bg-gradient-to-l from-emerald-400 to-teal-400 rounded-full transition-all duration-700 ml-auto"
                   style={{ width: `${pct * 100}%` }}
                 />
               </div>
 
-              {/* 起點點點 */}
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-gray-300 z-10" />
-
-              {/* 小動物 🐇 */}
+              {/* 跑步人 🏃（面朝左） */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 transition-all duration-700 text-xl leading-none"
-                style={{ left: animalLeft }}
+                className="absolute top-1/2 -translate-y-1/2 translate-x-1/2 z-20 transition-all duration-700 text-xl leading-none"
+                style={{
+                  right: `calc(${pct * 100}% * (100% - 3rem) / 100% + 1.5rem)`,
+                  transform: "translateY(-50%) scaleX(-1)",
+                }}
               >
-                🐇
+                🏃
               </div>
 
-              {/* 終點旗幟 */}
+              {/* 右邊起點 🏁 */}
               <div className="absolute right-0 top-1/2 -translate-y-full text-lg leading-none z-10">
                 🏁
               </div>
