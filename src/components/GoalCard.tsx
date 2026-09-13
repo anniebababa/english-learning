@@ -162,35 +162,32 @@ export default function GoalCard({ totalLearned }: { totalLearned: number }) {
               </span>
             </div>
 
-            {/* 動物跑道（右 → 左） */}
+            {/* 動物跑道（左 → 右） */}
             <div className="relative h-10 flex items-center px-6">
-              {/* 左邊終點 🎯 */}
+              {/* 左邊起點 🚦 */}
               <div className="absolute left-0 top-1/2 -translate-y-full text-lg leading-none z-10">
-                🎯
+                🚦
               </div>
 
-              {/* 跑道背景（從右往左填色） */}
+              {/* 跑道背景（從左往右填色） */}
               <div className="absolute inset-x-6 top-1/2 -translate-y-1/2 h-2 bg-gray-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-l from-emerald-400 to-teal-400 rounded-full transition-all duration-700 ml-auto"
+                  className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all duration-700"
                   style={{ width: `${pct * 100}%` }}
                 />
               </div>
 
-              {/* 跑步人 🏃（面朝左） */}
+              {/* 跑步人 🏃（面朝右） */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 translate-x-1/2 z-20 transition-all duration-700 text-xl leading-none"
-                style={{
-                  right: `calc(${pct * 100}% * (100% - 3rem) / 100% + 1.5rem)`,
-                  transform: "translateY(-50%) scaleX(-1)",
-                }}
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 transition-all duration-700 text-xl leading-none"
+                style={{ left: `calc(${pct * 100}% * (100% - 3rem) / 100% + 1.5rem)` }}
               >
                 🏃
               </div>
 
-              {/* 右邊起點 🏁 */}
+              {/* 右邊終點 🎯 */}
               <div className="absolute right-0 top-1/2 -translate-y-full text-lg leading-none z-10">
-                🏁
+                🎯
               </div>
             </div>
 
