@@ -27,11 +27,14 @@ export default function HomeClient({ todayPhrase }: Props) {
 
       {/* 今日一句 */}
       <section className="mb-10">
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-lg">✨</span>
-          <h2 className="text-sm font-semibold text-indigo-600 uppercase tracking-wider">
-            今日一句
-          </h2>
+        <div className="mb-3">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">✨</span>
+            <h2 className="text-sm font-semibold text-indigo-600 uppercase tracking-wider">
+              每日一句，積少成多！
+            </h2>
+          </div>
+          <p className="text-xs text-gray-400 pl-7">每天嘗試至少一句，一年就多會了 365 句！</p>
         </div>
         <PhraseCard phrase={todayPhrase} onReveal={markLearned} />
       </section>
