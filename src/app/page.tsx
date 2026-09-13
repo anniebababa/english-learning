@@ -11,7 +11,7 @@ export default function Home() {
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">每日英文學習</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">無聊就來學英文</h1>
           <p className="text-gray-500">每天一句，輕鬆開口說英文</p>
         </div>
 
