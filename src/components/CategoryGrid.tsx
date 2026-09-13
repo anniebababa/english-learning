@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   DndContext,
@@ -25,7 +25,15 @@ type Category = { id: string; label: string; emoji: string };
 
 const STORAGE_KEY = "english-category-order";
 
-function SortableCard({ cat, isDragging }: { cat: Category; isDragging: boolean }) {
+function SortableCard({
+  cat,
+  isDragging,
+  justDragged,
+}: {
+  cat: Category;
+  isDragging: boolean;
+  justDragged: React.MutableRefObject<boolean>;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSelfDragging } =
     useSortable({ id: cat.id });
 
@@ -40,7 +48,9 @@ function SortableCard({ cat, isDragging }: { cat: Category; isDragging: boolean 
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Link
         href={`/category/${cat.id}`}
-        onClick={(e) => isDragging && e.preventDefault()}
+        onClick={(e) => {
+          if (justDragged.current) e.preventDefault();
+        }}
         className="flex flex-col items-center justify-center gap-2 bg-white rounded-2xl border border-gray-100 aspect-square shadow-sm hover:shadow-md hover:border-indigo-200 hover:-translate-y-0.5 transition-all group select-none"
         draggable={false}
       >
@@ -57,6 +67,7 @@ export default function CategoryGrid() {
   const [items, setItems] = useState<Category[]>(defaultCategories);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const justDragged = useRef(false);
 
   useEffect(() => {
     try {
@@ -83,11 +94,15 @@ export default function CategoryGrid() {
 
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as string);
+    justDragged.current = false;
   }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     setActiveId(null);
+    justDragged.current = true;
+    setTimeout(() => { justDragged.current = false; }, 100);
+
     if (!over || active.id === over.id) return;
     setItems((prev) => {
       const oldIndex = prev.findIndex((c) => c.id === active.id);
@@ -120,7 +135,12 @@ export default function CategoryGrid() {
         <SortableContext items={items.map((c) => c.id)} strategy={rectSortingStrategy}>
           <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
             {items.map((cat) => (
-              <SortableCard key={cat.id} cat={cat} isDragging={activeId !== null} />
+              <SortableCard
+                key={cat.id}
+                cat={cat}
+                isDragging={activeId !== null}
+                justDragged={justDragged}
+              />
             ))}
           </div>
         </SortableContext>
