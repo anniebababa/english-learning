@@ -179,15 +179,18 @@ export default function GoalCard({ totalLearned }: { totalLearned: number }) {
 
               {/* 跑步人 🏃（面朝右） */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 transition-all duration-700 text-xl leading-none"
-                style={{ left: `calc(${pct * 100}% * (100% - 3rem) / 100% + 1.5rem)` }}
+                className="absolute top-1/2 -translate-y-1/2 z-20 transition-all duration-700 text-xl leading-none"
+                style={{
+                  left: `calc(${pct * 100}% * (100% - 3rem) / 100% + 1.5rem)`,
+                  transform: "translateY(-50%) translateX(-50%) scaleX(-1)",
+                }}
               >
                 🏃
               </div>
 
-              {/* 右邊終點 🎯 */}
+              {/* 右邊終點 🏁 */}
               <div className="absolute right-0 top-1/2 -translate-y-full text-lg leading-none z-10">
-                🎯
+                🏁
               </div>
             </div>
 
