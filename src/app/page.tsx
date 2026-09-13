@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import HomeClient from "@/components/HomeClient";
 import SearchSection from "@/components/SearchSection";
 import CategoryGrid from "@/components/CategoryGrid";
@@ -26,6 +27,12 @@ export default function Home() {
           <p className="text-sm sm:text-base text-gray-500 mt-2 leading-relaxed">
             每天一句，<br className="sm:hidden" />輕鬆開口說英文
           </p>
+          <Link
+            href="/guide"
+            className="mt-4 inline-flex items-center gap-1.5 self-start px-4 py-2 bg-white/80 hover:bg-white backdrop-blur-sm text-indigo-700 text-xs font-semibold rounded-full shadow-sm border border-indigo-100 transition-all hover:shadow-md"
+          >
+            💡 使用介紹 &amp; 說明
+          </Link>
         </div>
       </div>
 
