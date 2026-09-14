@@ -36,13 +36,15 @@ const CATEGORY_IMAGES: Record<string, string> = {
   teacher: "/categories/teacher.png",
   toeic: "/categories/toeic.png",
   uber: "/categories/uber.png",
+  spa: "/categories/spa.png",
+  bible: "/categories/bible.png",
 };
 
 function DragHandle(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       {...props}
-      className="absolute top-1.5 right-1.5 p-1 rounded-md text-gray-300 hover:text-gray-500 hover:bg-gray-100 transition-colors cursor-grab active:cursor-grabbing touch-none"
+      className="absolute top-1.5 right-1.5 p-1 rounded-md text-gray-400 hover:text-gray-600 bg-white/80 hover:bg-white transition-colors cursor-grab active:cursor-grabbing touch-none shadow-sm"
       title="拖曳排序"
     >
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -83,17 +85,19 @@ function SortableCard({ cat }: { cat: Category }) {
       >
         {imgSrc ? (
           <>
-            <div className="flex-1 relative w-full">
+            {/* 圖示區：佔滿剩餘空間 */}
+            <div className="flex-1 relative">
               <Image
                 src={imgSrc}
                 alt={cat.label}
                 fill
-                className="object-contain p-2.5"
-                sizes="150px"
+                className="object-contain p-4"
+                sizes="(max-width: 640px) 33vw, 25vw"
               />
             </div>
-            <div className="pb-2.5 text-center">
-              <span className="text-xs font-medium text-gray-600 group-hover:text-indigo-600 transition-colors leading-tight">
+            {/* 標籤區：固定高度，完全獨立不蓋圖 */}
+            <div className="border-t border-gray-100 py-1.5 px-1 shrink-0">
+              <span className="block text-center text-sm font-semibold text-gray-700 group-hover:text-indigo-600 transition-colors leading-tight">
                 {cat.label}
               </span>
             </div>
